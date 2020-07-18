@@ -1,0 +1,30 @@
+pragma solidity 0.5.1;
+contract MemoryAndStorage {
+
+    mapping(uint => User) users;
+
+    struct User{
+        uint id;
+        uint balance;
+    }
+
+    function addUser(uint id, uint balance) public {
+        users[id] = User(id, balance);
+    }
+
+    function updateBalance(uint id, uint balance) public {
+         //User memory user = users[id]; // this does not work as struct instance user is only stored in memory during the function execution, and lost on completion of function call//user.balance = balance;
+         //user.balance = balance; // We can fix by replacing memory with storage
+         User storage user = users[id];
+         user.balance = balance;
+         
+         // Or by changing the value of balance in the mapping from the temp user varibale, to the balance in users[id] since the mapping is a global state variable.
+         //users[id].balance = balance; this works as the uint is automatically stored in storage
+
+    }
+
+    function getBalance(uint id) view public returns (uint) {
+        return users[id].balance;
+    }
+
+}
